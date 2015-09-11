@@ -1,4 +1,10 @@
-requirejs(["domReady!", "./Graph", "./Layout"], function (doc, Graph, Layout) {
+requirejs.config({
+	paths: {
+		jquery: "./jquery-2.1.1.min"
+	}
+});
+
+requirejs(["domReady!", "./jquery", "./Graph", "./Layout"], function (doc, $, Graph, Layout) {
 	"use strict";
 
 	var container = doc.getElementById("out"),
@@ -7,7 +13,74 @@ requirejs(["domReady!", "./Graph", "./Layout"], function (doc, Graph, Layout) {
 		data,
 		settings,
 		graph,
-		layout;
+		layout,
+		dragStart = {},
+		currZoom = 1.0,
+		step = 0.3,
+		zoomIn = function () {
+			if (currZoom < 2.0) {
+				$("#out").animate({"zoom": currZoom += step}, "slow");
+			}
+		},
+		zoomOut = function () {
+			if (currZoom > 1.0) {
+				$('#out').animate({"zoom": currZoom -= step}, "slow");
+			}
+		};
+
+	$(doc).ready(function () {
+		$("#out").bind({
+			mousewheel: function (event) {
+				event.preventDefault();
+
+				if ((event.originalEvent.wheelDelta / 120) > 0) {
+					zoomIn();
+				} else {
+					zoomOut();
+				}
+			},
+
+			dblclick: function (event) {
+				currZoom = 1.0;
+				$(this).animate({"zoom": 1}, "slow");
+			},
+
+			mousedown: function (event) {
+				dragStart.offsetX = event.offsetX;
+				dragStart.offsetY = event.offsetY;
+
+				$(this).css("cursor", "move");
+			},
+
+			mousemove: function (event) {
+				if (dragStart.offsetX !== undefined) {
+					var diffX = dragStart.offsetX - event.offsetX,
+						diffY = dragStart.offsetY - event.offsetY;
+
+					$(this).scrollLeft($(this).scrollLeft() + diffX);
+					$(this).scrollTop($(this).scrollTop() + diffY);
+				}
+			},
+
+			mouseup: function (event) {
+				dragStart = {};
+				$(this).css("cursor", "default");
+			},
+
+			mouseout: function (event) {
+				dragStart = {};
+				$(this).css("cursor", "default");
+			}
+		});
+
+		$("#zoomIn").bind("click", function (event) {
+			zoomIn();
+		});
+
+		$("#zoomOut").bind("click", function (event) {
+			zoomOut();
+		});
+	});
 
 	// Trzy kostki:
 	vertices = [
