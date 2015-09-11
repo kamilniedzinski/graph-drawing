@@ -1,0 +1,39 @@
+html, body {
+	margin:0;
+	padding:0;
+	height:100%;
+}
+			
+body {
+	background-color:#F3F3F3;
+}
+			
+circle {
+	cursor:pointer;
+}
+			
+#header {
+	font-style:italic;
+	color:grey;
+	width:100%;
+	height:30px;
+	border-bottom:1px solid grey;
+}
+			
+#zoom {
+	position:absolute;
+	z-index:1;
+	margin-top:10px;
+	margin-left:10px;
+}
+			
+#out {
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+			
+#main, #content {
+	width:100%;
+	height:100%;
+}
