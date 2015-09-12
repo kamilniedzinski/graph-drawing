@@ -39,7 +39,7 @@ define(function () {
 					distVec = delta.normalize().multiplyConst(this.attraction(delta.mag()));
 
 				u.disp = u.disp.sub(distVec);
-				v.dist = v.disp.sub(distVec);
+				v.disp = v.disp.add(distVec);
 			}, this);
 		},
 
